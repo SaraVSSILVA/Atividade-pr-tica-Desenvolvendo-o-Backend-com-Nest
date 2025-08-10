@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, IsNull, Not } from 'typeorm';
 import { LoanEntity } from './LoanEntity';
 import { CreateLoanDto } from './dto/CreateLoanDto';
 import { ReturnLoanDto } from './dto/ReturnLoanDto';
@@ -20,22 +23,38 @@ export class LoanService {
 
   async create(
     dto: CreateLoanDto,
-    idUsuarioQueEmpresta: number,
+    usuarioQueEmprestaId: number,
   ): Promise<LoanEntity> {
     const cedente = await this.userRepository.findOne({
-      where: { id: idUsuarioQueEmpresta },
+      where: { id: usuarioQueEmprestaId },
     });
+
     const tomador = await this.userRepository.findOne({
-      where: { id: dto.UsurarioQueRecebeId },
+      where: { id: dto.usuarioQueRecebeId },
     });
+
     const livro = await this.bookRepository.findOne({
-      where: { id: dto.LivroId },
+      where: { id: dto.livroId },
     });
 
     if (!cedente || !tomador || !livro) {
       throw new HttpException(
         'Usuário ou livro não encontrado.',
         HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const emprestimoExistente = await this.loanRepository.findOne({
+      where: {
+        livro: { id: dto.livroId },
+        returnDate: IsNull(),
+      },
+    });
+
+    if (emprestimoExistente) {
+      throw new HttpException(
+        'Este livro já está emprestado.',
+        HttpStatus.CONFLICT,
       );
     }
 
@@ -56,7 +75,7 @@ export class LoanService {
   ): Promise<LoanEntity> {
     const emprestimo = await this.loanRepository.findOne({
       where: { id },
-      relations: ['lender'],
+      relations: ['cedente'],
     });
 
     if (!emprestimo) {
@@ -109,5 +128,24 @@ export class LoanService {
     emprestimo.returnDate = new Date();
 
     return this.loanRepository.save(emprestimo);
+  }
+
+  async listarHistoricoPorUsuario(
+    id: number,
+    status?: 'ativo' | 'concluido',
+  ): Promise<LoanEntity[]> {
+    const where: any = [{ tomador: { id } }, { cedente: { id } }];
+
+    if (status === 'ativo') {
+      where.forEach((w) => (w.returnDate = IsNull()));
+    } else if (status === 'concluido') {
+      where.forEach((w) => (w.returnDate = Not(IsNull())));
+    }
+
+    return this.loanRepository.find({
+      where,
+      relations: ['livro', 'cedente', 'tomador'],
+      order: { loanDate: 'DESC' },
+    });
   }
 }
