@@ -18,13 +18,14 @@ import { LoanEntity } from './loan/LoanEntity';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'root',
-      database: 'db_catalogo_livros',
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT),
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+
       entities: [BookEntity, GenreEntity, UserEntity, LoanEntity],
-      synchronize: true,
+      synchronize: false,
     }),
     BookModule,
     GenreModule,
