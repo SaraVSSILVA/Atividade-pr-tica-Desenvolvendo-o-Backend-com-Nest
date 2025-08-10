@@ -1,12 +1,16 @@
+// src/app.module.ts
+
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { Category } from './categories/entities/category.entity';
-import { Product } from './products/entities/product.entity';
-import { CategoriesModule } from './categories/categories.module';
-import { ProductsModule } from './products/products.module';
-
+import { BookEntity } from './books/entities/Book';
+import { GenreEntity } from './genres/entities/Genre';
+import { GenreModule } from './genres/Genre.Module';
+import { BookModule } from './books/Book.Module';
+import { UserEntity } from './users/entities/User';
+import { UserModule } from './users/User.Module';
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -15,12 +19,14 @@ import { ProductsModule } from './products/products.module';
       port: 3306,
       username: 'root',
       password: 'root',
-      database: 'games_store_db',
-      entities: [Category, Product],
+      database: 'db_catalogo_livros',
+      entities: [BookEntity, GenreEntity, UserEntity],
       synchronize: true,
     }),
-    CategoriesModule,
-    ProductsModule,
+    BookModule,
+    GenreModule,
+    UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
