@@ -2,97 +2,192 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+# 🎮 Games Store Backend
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Backend built with [NestJS](https://nestjs.com/) for a game store, with the ability to manage product and category data. This project follows best practices for development and layered architecture (Entity, Service, Controller) and uses MySQL as its database.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🚀 Features
 
-## Project setup
+* **Complete Category CRUD:**
+    * Create, list, find by ID, update, and delete game categories.
+* **Complete Product CRUD:**
+    * Create, list, find by ID, update, and delete product (game) data.
+* **One-to-Many Relationship:**
+    * A Category can have multiple Products, and a Product belongs to a single Category.
+    * Implemented a restriction (`onDelete: 'RESTRICT'`) to prevent the deletion of categories that still have associated products.
+* **Data Validation:**
+    * Uses Data Transfer Objects (DTOs) with `class-validator` to ensure data integrity in requests.
 
-```bash
-$ npm install
-```
+---
 
-## Compile and run the project
+## 🛠️ Technologies Used
 
-```bash
-# development
-$ npm run start
+* **[NestJS](https://nestjs.com/):** A progressive Node.js framework for building efficient and scalable server-side applications.
+* **[TypeORM](https://typeorm.io/#/):** An ORM (Object Relational Mapper) for TypeScript and JavaScript, allowing interaction with the database using classes and objects.
+* **[MySQL](https://www.mysql.com/):** A relational database management system.
+* **[Docker](https://www.docker.com/):** (Optional, but recommended for development environment) A platform for developing, shipping, and running applications in containers.
+* **[class-validator](https://github.com/typestack/class-validator):** A library for object validation.
+* **[class-transformer](https://github.com/typestack/class-transformer):** A library for object transformation.
 
-# watch mode
-$ npm run start:dev
+---
 
-# production mode
-$ npm run start:prod
-```
+## ⚙️ Prerequisites
 
-## Run tests
+Before you start, make sure you have the following tools installed on your machine:
 
-```bash
-# unit tests
-$ npm run test
+* **[Node.js](https://nodejs.org/):** (version 18.x or higher)
+* **[npm](https://www.npmjs.com/)** or **[Yarn](https://yarnpkg.com/):** Package manager.
+* **[MySQL Server](https://www.mysql.com/downloads/):** Installed locally or via Docker.
+* **[Docker](https://www.docker.com/get-started):** (Optional, but recommended for running MySQL in a container).
+* **[Git](https://git-scm.com/):** Version control system.
 
-# e2e tests
-$ npm run test:e2e
+---
 
-# test coverage
-$ npm run test:cov
-```
+## 🚀 Setup and Running the Application
 
-## Deployment
+Follow the steps below to set up and run the project on your local machine.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 1. Clone the Repository
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+git clone [https://github.com/SaraVSSILVA/Atividade-pr-tica-Desenvolvendo-o-Backend-com-Nest.git](https://github.com/SaraVSSILVA/Atividade-pr-tica-Desenvolvendo-o-Backend-com-Nest.git)
+cd Atividade-pr-tica-Desenvolvendo-o-Backend-com-Nest
+````
+2. Install Dependencies
+   
+````bash
+
+npm install
+````
+# or
 ```
+yarn install
+````
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+3. Configure the MySQL Database
+   
+You can use Docker to quickly start a MySQL container or install MySQL directly on your machine.
 
-## Resources
+Option A: Using Docker (Recommended)
+Make sure Docker is running.
 
-Check out a few resources that may come in handy when working with NestJS:
+Execute the command to start a MySQL container:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+````Bash
 
-## Support
+docker run --name games-store-mysql -e MYSQL_ROOT_PASSWORD=your_root_password -e MYSQL_DATABASE=games_store_db -p 3306:3306 -d mysql:8
+````
+Important: Replace your_root_password with a strong password of your choice.
+(Optional, but good practice) Create a specific user for the application:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```Bash
 
-## Stay in touch
+docker exec -it games-store-mysql mysql -u root -p
+````
+# Enter your_root_password when prompted
+At the MySQL prompt:
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+SQL
+```
+CREATE USER 'your_db_user'@'%' IDENTIFIED BY 'your_db_password';
+GRANT ALL PRIVILEGES ON games_store_db.* TO 'your_db_user'@'%';
+FLUSH PRIVILEGES;
+EXIT;
+```
+Replace your_db_user and your_db_password with the credentials you will use in the application.
 
-## License
+Option B: Locally Installed MySQL
+Ensure you have a MySQL server running at localhost:3306.
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Create a database named games_store_db.
+
+Create a user and password with permissions to access this database. Example via MySQL command line:
+
+SQL
+````
+CREATE DATABASE games_store_db;
+CREATE USER 'your_db_user'@'localhost' IDENTIFIED BY 'your_db_password';
+GRANT ALL PRIVILEGES ON games_store_db.* TO 'your_db_user'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+````
+4. Configure Credentials in the Project
+Open the src/app.module.ts file and update the database connection information with your credentials:
+
+TypeScript
+
+// src/app.module.ts
+import { TypeOrmModule } from '@nestjs/typeorm';
+// ... other imports
+
+@Module({
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+      username: 'your_db_user', // YOUR USERNAME HERE
+      password: 'your_db_password', // YOUR PASSWORD HERE
+      database: 'games_store_db',
+      autoLoadEntities: true,
+      synchronize: true, // CAUTION: Only use in development!
+    }),
+    // ... other modules
+  ],
+  // ...
+})
+export class AppModule {}
+5. Start the Application
+```Bash
+
+npm run start:dev
+````
+# or
+```
+yarn start:dev
+```
+The application will be running at http://localhost:3000. Database tables will be automatically created by TypeORM on the first run due to synchronize: true.
+
+🧪 Testing the API with Insomnia/Postman
+You can use tools like Insomnia or Postman to test the API endpoints.
+
+Category Endpoints (/categories)
+POST /categories: Creates a new category.
+
+Body: {"name": "Action", "description": "Action games."}
+
+GET /categories: Lists all categories.
+
+GET /categories/:id: Retrieves a category by ID.
+
+PUT /categories/:id: Updates a category.
+
+Body: {"name": "Action and Adventure"}
+
+DELETE /categories/:id: Deletes a category. (Note the restriction: cannot delete if there are associated products).
+
+Product Endpoints (/products)
+POST /products: Creates a new product.
+
+Body: {"name": "The Witcher 3", "description": "Fantasy RPG.", "price": 49.99, "stock": 50, "isAvailable": true, "categoryId": 1}
+
+(Important: categoryId must be an existing category ID.)
+
+GET /products: Lists all products (includes associated category details).
+
+GET /products/:id: Retrieves a product by ID (includes associated category details).
+
+PUT /products/:id: Updates a product.
+
+Body: {"price": 39.99, "stock": 40}
+
+DELETE /products/:id: Deletes a product.
+
+🤝 Contribution
+
+Contributions are welcome! Feel free to open issues or pull requests.
+
+📄 License
+This project is licensed under the MIT License.
