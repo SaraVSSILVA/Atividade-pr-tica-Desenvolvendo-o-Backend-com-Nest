@@ -1,193 +1,96 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 📚 Letrário — Gerencie sua biblioteca pessoal com estilo
 
-# 🎮 Games Store Backend
-
-Backend built with [NestJS](https://nestjs.com/) for a game store, with the ability to manage product and category data. This project follows best practices for development and layered architecture (Entity, Service, Controller) and uses MySQL as its database.
+**Letrário** é uma aplicação completa (fullstack) para organização de acervos literários. Com uma API robusta em NestJS e uma interface intuitiva em [React]. O projeto nasceu para gerênciar meu livros, e hoje evolui como uma ferramenta para qualquer leitor que deseja organizar seus livros, acompanhar empréstimos e planejar futuras aquisições.
 
 ---
 
-## 🚀 Features
+## 🖥️ Acesso à Aplicação
 
-* **Complete Category CRUD:**
-    * Create, list, find by ID, update, and delete game categories.
-* **Complete Product CRUD:**
-    * Create, list, find by ID, update, and delete product (game) data.
-* **One-to-Many Relationship:**
-    * A Category can have multiple Products, and a Product belongs to a single Category.
-    * Implemented a restriction (`onDelete: 'RESTRICT'`) to prevent the deletion of categories that still have associated products.
-* **Data Validation:**
-    * Uses Data Transfer Objects (DTOs) with `class-validator` to ensure data integrity in requests.
+- 🌐 **Frontend (produção):** [https://letrario.app](https://letrario.app)  
+- 🔌 **API (produção):** [https://api.letrario.app](https://api.letrario.app)  
+- 📑 **Documentação Swagger:** [https://api.letrario.app/api](https://api.letrario.app/api)
 
 ---
 
-## 🛠️ Technologies Used
+## ✨ Funcionalidades
 
-* **[NestJS](https://nestjs.com/):** A progressive Node.js framework for building efficient and scalable server-side applications.
-* **[TypeORM](https://typeorm.io/#/):** An ORM (Object Relational Mapper) for TypeScript and JavaScript, allowing interaction with the database using classes and objects.
-* **[MySQL](https://www.mysql.com/):** A relational database management system.
-* **[Docker](https://www.docker.com/):** (Optional, but recommended for development environment) A platform for developing, shipping, and running applications in containers.
-* **[class-validator](https://github.com/typestack/class-validator):** A library for object validation.
-* **[class-transformer](https://github.com/typestack/class-transformer):** A library for object transformation.
+### Backend (NestJS)
+- 👤 Usuários: Cadastro, autenticação via JWT, listagem
+- 📚 Livros: Cadastro, atualização, listagem, associação com gêneros
+- 🏷️ Gêneros: Cadastro e listagem
+- 🔄 Empréstimos: Registro, devolução, histórico
+- 💭 Wishlist: Gerenciamento de desejos literários
 
----
-
-## ⚙️ Prerequisites
-
-Before you start, make sure you have the following tools installed on your machine:
-
-* **[Node.js](https://nodejs.org/):** (version 18.x or higher)
-* **[npm](https://www.npmjs.com/)** or **[Yarn](https://yarnpkg.com/):** Package manager.
-* **[MySQL Server](https://www.mysql.com/downloads/):** Installed locally or via Docker.
-* **[Docker](https://www.docker.com/get-started):** (Optional, but recommended for running MySQL in a container).
-* **[Git](https://git-scm.com/):** Version control system.
+### Frontend ([React/Vue/etc.])
+- 🧭 Navegação amigável e responsiva
+- 🔐 Login e cadastro com feedback visual
+- 📚 Visualização de livros com capas e filtros
+- 📊 Painel de empréstimos e histórico
+- 💡 Wishlist interativa com sugestões
 
 ---
 
-## 🚀 Setup and Running the Application
+## 🛠️ Tecnologias Utilizadas
 
-Follow the steps below to set up and run the project on your local machine.
+| Camada       | Tecnologias                                                                 |
+|--------------|------------------------------------------------------------------------------|
+| Backend      | NestJS, TypeORM, PostgreSQL, JWT, Swagger                                   |
+| Frontend     | [React/Vue], Axios, Styled Components/Tailwind, React Router           |
+| Deploy       | Railway         |
 
-### 1. Clone the Repository
+---
+
+## 🚀 Instalação Local
+
+### Backend
+```bash
+git clone <url-do-repositorio>
+cd letrario/backend
+npm install
+npm run typeorm:migration:run
+npm run start:dev
+```
+
+### Frontend
+```bash
+cd letrario/frontend
+npm install
+npm run dev
+```
+
+> Certifique-se de configurar as variáveis de ambiente em ambos os diretórios (`.env`).
+
+---
+
+## 🧪 Scripts úteis
 
 ```bash
-git clone [https://github.com/SaraVSSILVA/Atividade-pr-tica-Desenvolvendo-o-Backend-com-Nest.git](https://github.com/SaraVSSILVA/Atividade-pr-tica-Desenvolvendo-o-Backend-com-Nest.git)
-cd Atividade-pr-tica-Desenvolvendo-o-Backend-com-Nest
-````
-2. Install Dependencies
-   
-````bash
+# Backend
+npm run test:e2e        # Testes end-to-end
+npx eslint . --fix      # Correção de lint
 
-npm install
-````
-# or
+# Frontend
+npm run lint            # Verifica problemas de estilo
+npm run build           # Gera versão de produção
 ```
-yarn install
-````
 
-3. Configure the MySQL Database
-   
-You can use Docker to quickly start a MySQL container or install MySQL directly on your machine.
+---
 
-Option A: Using Docker (Recommended)
-Make sure Docker is running.
+## 🤝 Contribuição & Patrocínio
 
-Execute the command to start a MySQL container:
+Pull requests são super bem-vindos! Se você encontrou um bug, pensou numa melhoria ou quer adicionar uma nova funcionalidade, fique à vontade para contribuir. Se você gostou do projeto e quer apoiar seu desenvolvimento, considere se tornar um patrocinador. Toda ajuda — seja financeira, técnica ou em divulgação — é muito bem-vinda e ajuda o Letrário a crescer.
+💡 Formas de apoiar:
+- Doações
+- Parcerias com editoras, clubes de leitura ou livrarias
+- Divulgação do projeto em redes sociais ou comunidades de tecnologia 📬 Para patrocínio ou colaboração institucional: Entre em contato pelo e-mail: saravitoriads@outlook.com
 
-````Bash
 
-docker run --name games-store-mysql -e MYSQL_ROOT_PASSWORD=your_root_password -e MYSQL_DATABASE=games_store_db -p 3306:3306 -d mysql:8
-````
-Important: Replace your_root_password with a strong password of your choice.
-(Optional, but good practice) Create a specific user for the application:
+---
 
-```Bash
+## 📄 Licença
 
-docker exec -it games-store-mysql mysql -u root -p
-````
-# Enter your_root_password when prompted
-At the MySQL prompt:
+Este projeto está licenciado sob a **MIT License** — sinta-se livre para usar, estudar e contribuir.
 
-SQL
-```
-CREATE USER 'your_db_user'@'%' IDENTIFIED BY 'your_db_password';
-GRANT ALL PRIVILEGES ON games_store_db.* TO 'your_db_user'@'%';
-FLUSH PRIVILEGES;
-EXIT;
-```
-Replace your_db_user and your_db_password with the credentials you will use in the application.
+---
 
-Option B: Locally Installed MySQL
-Ensure you have a MySQL server running at localhost:3306.
-
-Create a database named games_store_db.
-
-Create a user and password with permissions to access this database. Example via MySQL command line:
-
-SQL
-````
-CREATE DATABASE games_store_db;
-CREATE USER 'your_db_user'@'localhost' IDENTIFIED BY 'your_db_password';
-GRANT ALL PRIVILEGES ON games_store_db.* TO 'your_db_user'@'localhost';
-FLUSH PRIVILEGES;
-EXIT;
-````
-4. Configure Credentials in the Project
-Open the src/app.module.ts file and update the database connection information with your credentials:
-
-TypeScript
-
-// src/app.module.ts
-import { TypeOrmModule } from '@nestjs/typeorm';
-// ... other imports
-
-@Module({
-  imports: [
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'your_db_user', // YOUR USERNAME HERE
-      password: 'your_db_password', // YOUR PASSWORD HERE
-      database: 'games_store_db',
-      autoLoadEntities: true,
-      synchronize: true, // CAUTION: Only use in development!
-    }),
-    // ... other modules
-  ],
-  // ...
-})
-export class AppModule {}
-5. Start the Application
-```Bash
-
-npm run start:dev
-````
-# or
-```
-yarn start:dev
-```
-The application will be running at http://localhost:3000. Database tables will be automatically created by TypeORM on the first run due to synchronize: true.
-
-🧪 Testing the API with Insomnia/Postman
-You can use tools like Insomnia or Postman to test the API endpoints.
-
-Category Endpoints (/categories)
-POST /categories: Creates a new category.
-
-Body: {"name": "Action", "description": "Action games."}
-
-GET /categories: Lists all categories.
-
-GET /categories/:id: Retrieves a category by ID.
-
-PUT /categories/:id: Updates a category.
-
-Body: {"name": "Action and Adventure"}
-
-DELETE /categories/:id: Deletes a category. (Note the restriction: cannot delete if there are associated products).
-
-Product Endpoints (/products)
-POST /products: Creates a new product.
-
-Body: {"name": "The Witcher 3", "description": "Fantasy RPG.", "price": 49.99, "stock": 50, "isAvailable": true, "categoryId": 1}
-
-(Important: categoryId must be an existing category ID.)
-
-GET /products: Lists all products (includes associated category details).
-
-GET /products/:id: Retrieves a product by ID (includes associated category details).
-
-PUT /products/:id: Updates a product.
-
-Body: {"price": 39.99, "stock": 40}
-
-DELETE /products/:id: Deletes a product.
-
-🤝 Contribution
-
-Contributions are welcome! Feel free to open issues or pull requests.
-
-📄 License
-This project is licensed under the MIT License.
+**Letrário** — *Onde seus livros têm voz e sua estante ganha vida.*
