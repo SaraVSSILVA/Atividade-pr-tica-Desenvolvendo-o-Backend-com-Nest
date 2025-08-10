@@ -45,15 +45,27 @@ export class BookEntity {
   yearPublished: number;
 
   // Novo campo para o status do livro, usando o enum
-  @Column({ name: 'status', type: 'enum', enum: BookStatus, default: BookStatus.QUERO })
+  @Column({
+    name: 'status',
+    type: 'enum',
+    enum: BookStatus,
+    default: BookStatus.QUERO,
+  })
   status: BookStatus;
 
   // Novo campo para a prioridade de leitura, usando o enum
-  @Column({ name: 'priority', type: 'enum', enum: BookPriority, default: BookPriority.BAIXA })
+  @Column({
+    name: 'priority',
+    type: 'enum',
+    enum: BookPriority,
+    default: BookPriority.BAIXA,
+  })
   priority: BookPriority;
 
   // Relacionamento com a entidade Genre
-  @ManyToOne(() => GenreEntity, (genre) => genre.books, { onDelete: 'RESTRICT' })
+  @ManyToOne(() => GenreEntity, (genre) => genre.books, {
+    onDelete: 'RESTRICT',
+  })
   @JoinColumn({ name: 'genre_id' })
   genre: GenreEntity;
 }

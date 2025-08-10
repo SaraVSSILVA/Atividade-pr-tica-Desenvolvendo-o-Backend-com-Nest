@@ -15,7 +15,7 @@ export class BookService {
     private readonly bookRepository: Repository<BookEntity>,
     @InjectRepository(GenreEntity)
     private readonly genreRepository: Repository<GenreEntity>,
-  ) { }
+  ) {}
 
   async findAll(): Promise<BookEntity[]> {
     // Retorna todos os livros, incluindo os dados do gênero associado
@@ -41,7 +41,9 @@ export class BookService {
       where: { id: createBookDto.genreId },
     });
     if (!genre) {
-      throw new NotFoundException(`Gênero com ID ${createBookDto.genreId} não encontrado.`);
+      throw new NotFoundException(
+        `Gênero com ID ${createBookDto.genreId} não encontrado.`,
+      );
     }
 
     // Cria uma nova instância do livro e salva no banco
@@ -68,7 +70,9 @@ export class BookService {
         where: { id: updateBookDto.genreId },
       });
       if (!genre) {
-        throw new NotFoundException(`Gênero com ID ${updateBookDto.genreId} não encontrado.`);
+        throw new NotFoundException(
+          `Gênero com ID ${updateBookDto.genreId} não encontrado.`,
+        );
       }
       existingBook.genre = genre;
     }

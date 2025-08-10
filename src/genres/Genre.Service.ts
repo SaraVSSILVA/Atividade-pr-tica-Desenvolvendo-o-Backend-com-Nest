@@ -12,7 +12,7 @@ export class GenreService {
   constructor(
     @InjectRepository(GenreEntity)
     private readonly genreRepository: Repository<GenreEntity>,
-  ) { }
+  ) {}
 
   async findAll(): Promise<GenreEntity[]> {
     // Retorna todos os gêneros
@@ -35,7 +35,10 @@ export class GenreService {
     return this.genreRepository.save(newGenre);
   }
 
-  async update(id: number, updateGenreDto: UpdateGenreDto): Promise<GenreEntity> {
+  async update(
+    id: number,
+    updateGenreDto: UpdateGenreDto,
+  ): Promise<GenreEntity> {
     // Carrega o gênero existente e atualiza os campos
     const existingGenre = await this.genreRepository.preload({
       id: id,

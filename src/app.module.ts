@@ -11,6 +11,7 @@ import { BookModule } from './books/Book.Module';
 import { UserEntity } from './users/entities/User';
 import { UserModule } from './users/User.Module';
 import { AuthModule } from './auth/auth.module';
+import { LoanModule } from './loan/Loan.Module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -27,6 +28,7 @@ import { AuthModule } from './auth/auth.module';
     GenreModule,
     UserModule,
     AuthModule,
+    LoanModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -22,10 +22,10 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 
-@ApiTags('Books') // ✅ Agrupa no Swagger
+@ApiTags('Livros')
 @ApiBearerAuth('access-token') // ✅ Informa que precisa de token
 @UseGuards(AuthGuard('jwt')) // ✅ Protege todas as rotas
-@Controller('books')
+@Controller('livro')
 export class BookController {
   constructor(private readonly bookService: BookService) {}
 
