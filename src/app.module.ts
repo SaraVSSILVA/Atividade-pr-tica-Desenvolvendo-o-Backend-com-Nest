@@ -12,6 +12,8 @@ import { UserEntity } from './users/entities/User';
 import { UserModule } from './users/User.Module';
 import { AuthModule } from './auth/auth.module';
 import { LoanModule } from './loan/Loan.Module';
+import { WishlistModule } from './whishlist/Wishlist.Module';
+import { LoanEntity } from './loan/LoanEntity';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -21,7 +23,7 @@ import { LoanModule } from './loan/Loan.Module';
       username: 'root',
       password: 'root',
       database: 'db_catalogo_livros',
-      entities: [BookEntity, GenreEntity, UserEntity],
+      entities: [BookEntity, GenreEntity, UserEntity, LoanEntity],
       synchronize: true,
     }),
     BookModule,
@@ -29,6 +31,7 @@ import { LoanModule } from './loan/Loan.Module';
     UserModule,
     AuthModule,
     LoanModule,
+    WishlistModule,
   ],
   controllers: [AppController],
   providers: [AppService],

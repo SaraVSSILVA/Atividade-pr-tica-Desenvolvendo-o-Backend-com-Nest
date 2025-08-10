@@ -100,6 +100,12 @@ export class LoanService {
   async buscarEmprestimosTomadosPorUsuario(
     usuarioId: number,
   ): Promise<LoanEntity[]> {
+    const usuario = await this.userRepository.findOne({
+      where: { id: usuarioId },
+    });
+    if (!usuario) {
+      throw new HttpException('Usuário não encontrado.', HttpStatus.NOT_FOUND);
+    }
     return this.loanRepository.find({
       where: { tomador: { id: usuarioId } },
       relations: ['livro', 'tomador'],
