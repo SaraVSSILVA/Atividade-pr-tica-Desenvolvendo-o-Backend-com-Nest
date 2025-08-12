@@ -1,5 +1,3 @@
-// src/books/entities/Book.entity.ts
-
 import {
   Column,
   Entity,
@@ -44,7 +42,10 @@ export class BookEntity {
   @Column({ name: 'year_published', type: 'int', nullable: true })
   yearPublished: number;
 
-  // Novo campo para o status do livro, usando o enum
+  @Column({ name: 'cover_url', type: 'text', nullable: true })
+  coverUrl: string;
+
+  // campo para o status do livro, usando o enum
   @Column({
     name: 'status',
     type: 'enum',
@@ -53,7 +54,7 @@ export class BookEntity {
   })
   status: BookStatus;
 
-  // Novo campo para a prioridade de leitura, usando o enum
+  // campo para a prioridade de leitura, usando o enum
   @Column({
     name: 'priority',
     type: 'enum',

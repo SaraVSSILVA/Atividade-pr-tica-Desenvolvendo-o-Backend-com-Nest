@@ -36,14 +36,25 @@ describe('BooksController (e2e)', () => {
     expect(Array.isArray(response.body)).toBe(true);
   });
 
-  it('POST /books deve criar um livro', async () => {
-    const book = { title: 'Livro Teste', author: 'Autor Teste', year: 2025 };
+  it('POST /livro deve criar um livro com coverUrl', async () => {
+    const book = {
+      name: 'Livro Teste',
+      author: 'Autor Teste',
+      yearPublished: 2025,
+      status: 'Quero',
+      genreId: 1,
+    };
     const response = await request(app.getHttpServer())
-      .post('/books')
+      .post('/livro')
       .set('Authorization', `Bearer ${jwtToken}`)
       .send(book);
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty('id');
+    expect(response.body).toHaveProperty('coverUrl');
+    expect(
+      typeof response.body.coverUrl === 'string' ||
+      response.body.coverUrl === null,
+    ).toBe(true);
     createdBookId = response.body.id;
   });
 

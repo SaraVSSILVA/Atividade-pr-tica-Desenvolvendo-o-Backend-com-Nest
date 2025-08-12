@@ -6,12 +6,13 @@ import { BookController } from './Book.Controller';
 import { BookService } from './Book.Service';
 import { GenreEntity } from '../genres/entities/Genre';
 import { AuthModule } from '../auth/auth.module';
-
+import { HttpModule } from '@nestjs/axios';
 @Module({
   imports: [
     TypeOrmModule.forFeature([BookEntity, GenreEntity]),
     GenreModule,
     AuthModule,
+    HttpModule,
   ],
   controllers: [BookController],
   providers: [BookService],

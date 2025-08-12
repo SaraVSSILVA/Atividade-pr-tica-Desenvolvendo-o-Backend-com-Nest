@@ -1,5 +1,7 @@
-// src/books/Book.service.ts
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -7,6 +9,7 @@ import { BookEntity } from './entities/Book';
 import { CreateBookDto } from './dto/CreateBookDto';
 import { UpdateBookDto } from './dto/UpdateBookDto';
 import { GenreEntity } from '../genres/entities/Genre';
+import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class BookService {
@@ -15,6 +18,7 @@ export class BookService {
     private readonly bookRepository: Repository<BookEntity>,
     @InjectRepository(GenreEntity)
     private readonly genreRepository: Repository<GenreEntity>,
+    private httpService: HttpService,
   ) {}
 
   async findAll(): Promise<BookEntity[]> {
@@ -36,7 +40,11 @@ export class BookService {
   }
 
   async create(createBookDto: CreateBookDto): Promise<BookEntity> {
-    // Primeiro, verifica se o gênero existe
+    // Busca a URL da capa
+    const coverUrl = await this.fetchBookCoverUrl(
+      createBookDto.name,
+      createBookDto.author,
+    );
     const genre = await this.genreRepository.findOne({
       where: { id: createBookDto.genreId },
     });
@@ -49,6 +57,7 @@ export class BookService {
     // Cria uma nova instância do livro e salva no banco
     const newBook = this.bookRepository.create({
       ...createBookDto,
+      coverUrl: coverUrl ?? undefined,
       genre, // Associa a entidade de gênero
     });
     return this.bookRepository.save(newBook);
@@ -83,5 +92,25 @@ export class BookService {
   async remove(id: number): Promise<void> {
     const bookToRemove = await this.findOne(id);
     await this.bookRepository.remove(bookToRemove);
+  }
+
+  private async fetchBookCoverUrl(
+    title: string,
+    author?: string,
+  ): Promise<string | null> {
+    const query = `${title}${author ? ' ' + author : ''}`;
+    const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
+    const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&key=${apiKey}`;
+    try {
+      const response = await this.httpService.get(url).toPromise();
+      const items = response?.data?.items;
+      if (Array.isArray(items) && items.length > 0) {
+        const imageLinks = items[0]?.volumeInfo?.imageLinks;
+        return imageLinks?.thumbnail || null;
+      }
+      return null;
+    } catch (error) {
+      return null;
+    }
   }
 }

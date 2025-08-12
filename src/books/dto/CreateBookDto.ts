@@ -18,6 +18,9 @@ export class CreateBookDto {
 
   @IsString()
   @IsNotEmpty({ message: 'O campo autor não pode ser vazio' })
+  @IsOptional()
+  @IsString()
+  coverUrl?: string;
   author: string;
 
   @IsString()
