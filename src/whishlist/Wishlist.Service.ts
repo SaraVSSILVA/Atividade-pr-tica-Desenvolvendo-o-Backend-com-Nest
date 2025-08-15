@@ -15,15 +15,46 @@ export class WishlistService {
     private readonly userRepository: Repository<UserEntity>,
     @InjectRepository(BookEntity)
     private readonly bookRepository: Repository<BookEntity>,
-  ) {}
+  ) { }
 
   async adicionar(dto: CreateWishlistDto): Promise<WishlistEntity> {
     const usuario = await this.userRepository.findOne({
       where: { id: dto.usuarioId },
     });
-    const livro = await this.bookRepository.findOne({
+    let livro = await this.bookRepository.findOne({
       where: { id: dto.livroId },
     });
+    // Se o livro não existe, buscar na Google Books API e criar
+    if (!livro) {
+      // Busca o livro na Google Books API pelo id
+      const axios = require('axios');
+      const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
+      const url = `https://www.googleapis.com/books/v1/volumes/${dto.livroId}?key=${apiKey}`;
+      const response = await axios.get(url);
+      const item = response.data;
+      if (!item || !item.volumeInfo) {
+        throw new NotFoundException(
+          'Livro não encontrado na Google Books API.',
+        );
+      }
+      // Cria o livro no banco
+      livro = this.bookRepository.create({
+        id: dto.livroId,
+        name: item.volumeInfo.title || '',
+        author: Array.isArray(item.volumeInfo.authors)
+          ? item.volumeInfo.authors.join(', ')
+          : '',
+        coverUrl: item.volumeInfo.imageLinks?.thumbnail || '',
+        description: item.volumeInfo.description || '',
+        publisher: item.volumeInfo.publisher || '',
+        yearPublished: item.volumeInfo.publishedDate
+          ? parseInt(item.volumeInfo.publishedDate)
+          : null,
+        status: 'Quero',
+        priority: 'BAIXA',
+      });
+      livro = await this.bookRepository.save(livro);
+    }
     if (!usuario || !livro) {
       throw new NotFoundException('Usuário ou livro não encontrado.');
     }
