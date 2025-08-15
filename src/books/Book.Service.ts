@@ -1,3 +1,4 @@
+import axios from 'axios';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -13,6 +14,16 @@ import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class BookService {
+  async searchGoogleBooks(query: string): Promise<any[]> {
+    const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
+    const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&key=${apiKey}`;
+    try {
+      const response = await axios.get(url);
+      return response.data.items || [];
+    } catch (error) {
+      return [];
+    }
+  }
   constructor(
     @InjectRepository(BookEntity)
     private readonly bookRepository: Repository<BookEntity>,

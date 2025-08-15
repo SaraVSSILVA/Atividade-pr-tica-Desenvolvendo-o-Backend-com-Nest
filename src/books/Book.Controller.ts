@@ -1,3 +1,4 @@
+import { Query } from '@nestjs/common';
 import {
   Controller,
   Get,
@@ -27,6 +28,11 @@ import {
 @UseGuards(AuthGuard('jwt')) // ✅ Protege todas as rotas
 @Controller('livro')
 export class BookController {
+  @Get('search/google')
+  @ApiOperation({ summary: 'Busca livros na Google Books API' })
+  async searchGoogle(@Query('q') q: string): Promise<any[]> {
+    return this.bookService.searchGoogleBooks(q);
+  }
   constructor(private readonly bookService: BookService) {}
 
   @Get()
