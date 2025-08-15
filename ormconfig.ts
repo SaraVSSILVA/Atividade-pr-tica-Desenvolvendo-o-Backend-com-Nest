@@ -12,7 +12,13 @@ export default new DataSource({
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  entities: [BookEntity, GenreEntity, UserEntity, LoanEntity],
+  entities: [
+    BookEntity,
+    GenreEntity,
+    UserEntity,
+    LoanEntity,
+    require('./src/whishlist/entities/WishlistEntity').WishlistEntity,
+  ],
   migrations: ['src/migrations/*.ts'],
   synchronize: false,
 });

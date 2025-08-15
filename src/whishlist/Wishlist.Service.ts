@@ -54,14 +54,18 @@ export class WishlistService {
       // Cria o livro no banco
       livro = this.bookRepository.create({
         name: volumeInfo.title || '',
-        author: Array.isArray(volumeInfo.authors) ? volumeInfo.authors.join(', ') : '',
+        author: Array.isArray(volumeInfo.authors)
+          ? volumeInfo.authors.join(', ')
+          : '',
         coverUrl: volumeInfo.imageLinks?.thumbnail || '',
         description: volumeInfo.description || '',
         publisher: volumeInfo.publisher || '',
-        yearPublished: volumeInfo.publishedDate ? parseInt(volumeInfo.publishedDate.substring(0, 4)) : null,
+        yearPublished: volumeInfo.publishedDate
+          ? parseInt(volumeInfo.publishedDate.substring(0, 4))
+          : null,
         status: BookStatus.QUERO,
         priority: BookPriority.BAIXA,
-    genre: undefined,
+        genre: undefined,
       } as Partial<BookEntity>);
       livro = await this.bookRepository.save(livro);
     }
