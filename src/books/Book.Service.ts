@@ -39,7 +39,7 @@ export class BookService {
     @InjectRepository(GenreEntity)
     private readonly genreRepository: Repository<GenreEntity>,
     private httpService: HttpService,
-  ) { }
+  ) {}
 
   async findAll(): Promise<BookEntity[]> {
     // Retorna todos os livros, incluindo os dados do gênero associado
