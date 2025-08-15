@@ -22,7 +22,7 @@ import {
 } from '@nestjs/swagger';
 
 @ApiTags('Lista de Desejos')
-@Controller('/lista de desejo')
+@Controller('/wishlist')
 @ApiBearerAuth('access-token')
 @UseGuards(AuthGuard('jwt'))
 export class WishlistController {
