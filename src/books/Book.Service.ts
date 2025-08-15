@@ -19,7 +19,16 @@ export class BookService {
     const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&key=${apiKey}`;
     try {
       const response = await axios.get(url);
-      return response.data.items || [];
+      const items = response.data.items || [];
+      // Adapta para o formato esperado pelo frontend
+      return items.map((item: any) => ({
+        id: item.id,
+        titulo: item.volumeInfo?.title || '',
+        autor: Array.isArray(item.volumeInfo?.authors)
+          ? item.volumeInfo.authors.join(', ')
+          : '',
+        capaUrl: item.volumeInfo?.imageLinks?.thumbnail || '',
+      }));
     } catch (error) {
       return [];
     }
@@ -30,7 +39,7 @@ export class BookService {
     @InjectRepository(GenreEntity)
     private readonly genreRepository: Repository<GenreEntity>,
     private httpService: HttpService,
-  ) {}
+  ) { }
 
   async findAll(): Promise<BookEntity[]> {
     // Retorna todos os livros, incluindo os dados do gênero associado
