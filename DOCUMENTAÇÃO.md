@@ -57,14 +57,94 @@ O projeto está organizado em módulos, seguindo o padrão do NestJS:
 - `npm run build` - Compila o projeto
 - `npm run test` - Executa os testes
 
-## Funcionalidades Principais
+## Integração com o Frontend
 
-- **Autenticação JWT**: Login seguro e proteção de rotas.
-- **CRUD de Livros**: Cadastro, listagem, atualização e remoção de livros.
-- **CRUD de Gêneros**: Gerenciamento de gêneros literários.
-- **Empréstimos**: Controle de empréstimos e devoluções de livros.
-- **Usuários**: Cadastro e gerenciamento de usuários.
-- **Wishlist**: Adição e remoção de livros na lista de desejos.
+### Autenticação
+
+**Login**
+`POST /auth/login`
+
+```json
+{
+  "username": "seu_usuario",
+  "password": "sua_senha"
+}
+```
+
+**Resposta:**
+
+```json
+{
+  "access_token": "<token_jwt>"
+}
+```
+
+**Todas as rotas protegidas exigem o header:**
+
+```
+Authorization: Bearer <token_jwt>
+```
+
+### Livros
+
+**Listar todos os livros**
+`GET /livro`
+**Resposta:**
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Dom Casmurro",
+    "author": "Machado de Assis",
+    "coverUrl": "https://books.google.com/cover.jpg",
+    "yearPublished": 1899,
+    "status": "Lendo",
+    "genre": { "id": 1, "name": "Romance" }
+  }
+]
+```
+
+**Criar livro**
+`POST /livro`
+
+```json
+{
+  "name": "Livro Teste",
+  "author": "Autor Teste",
+  "yearPublished": 2025,
+  "status": "Quero",
+  "genreId": 1
+}
+```
+
+**Resposta inclui o campo `coverUrl` automaticamente buscado na Google Books API.**
+
+**Buscar livro por ID**
+`GET /livro/:id`
+
+**Atualizar livro**
+`PUT /livro/:id`
+
+**Remover livro**
+`DELETE /livro/:id`
+
+### Gêneros
+
+`GET /genero` — Lista todos os gêneros
+
+### Usuários
+
+`GET /usuario` — Lista todos os usuários
+
+### Wishlist
+
+`GET /wishlist` — Lista a wishlist do usuário autenticado
+
+### Observações
+
+- O campo `coverUrl` dos livros pode ser usado para exibir a capa no frontend.
+- Consulte o backend para mais detalhes ou endpoints específicos.
 
 ## Padrão de Código e Boas Práticas
 
