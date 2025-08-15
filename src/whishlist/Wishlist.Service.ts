@@ -1,9 +1,10 @@
+import axios from 'axios';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { WishlistEntity } from './entities/WishlistEntity';
 import { UserEntity } from '../users/entities/User';
-import { BookEntity } from '../books/entities/Book';
+import { BookEntity, BookStatus, BookPriority } from '../books/entities/Book';
 import { CreateWishlistDto } from './dto/CreateWishlistDto';
 
 @Injectable()
@@ -27,32 +28,41 @@ export class WishlistService {
     // Se o livro não existe, buscar na Google Books API e criar
     if (!livro) {
       // Busca o livro na Google Books API pelo id
-      const axios = require('axios');
       const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
       const url = `https://www.googleapis.com/books/v1/volumes/${dto.livroId}?key=${apiKey}`;
       const response = await axios.get(url);
-      const item = response.data;
-      if (!item || !item.volumeInfo) {
+      type GoogleBooksVolumeInfo = {
+        title?: string;
+        authors?: string[];
+        imageLinks?: { thumbnail?: string };
+        description?: string;
+        publisher?: string;
+        publishedDate?: string;
+      };
+
+      type GoogleBooksItem = {
+        volumeInfo?: GoogleBooksVolumeInfo;
+      };
+
+      const item = response.data as GoogleBooksItem;
+      const volumeInfo = item.volumeInfo;
+      if (!volumeInfo) {
         throw new NotFoundException(
           'Livro não encontrado na Google Books API.',
         );
       }
       // Cria o livro no banco
       livro = this.bookRepository.create({
-        id: dto.livroId,
-        name: item.volumeInfo.title || '',
-        author: Array.isArray(item.volumeInfo.authors)
-          ? item.volumeInfo.authors.join(', ')
-          : '',
-        coverUrl: item.volumeInfo.imageLinks?.thumbnail || '',
-        description: item.volumeInfo.description || '',
-        publisher: item.volumeInfo.publisher || '',
-        yearPublished: item.volumeInfo.publishedDate
-          ? parseInt(item.volumeInfo.publishedDate)
-          : null,
-        status: 'Quero',
-        priority: 'BAIXA',
-      });
+        name: volumeInfo.title || '',
+        author: Array.isArray(volumeInfo.authors) ? volumeInfo.authors.join(', ') : '',
+        coverUrl: volumeInfo.imageLinks?.thumbnail || '',
+        description: volumeInfo.description || '',
+        publisher: volumeInfo.publisher || '',
+        yearPublished: volumeInfo.publishedDate ? parseInt(volumeInfo.publishedDate.substring(0, 4)) : null,
+        status: BookStatus.QUERO,
+        priority: BookPriority.BAIXA,
+    genre: undefined,
+      } as Partial<BookEntity>);
       livro = await this.bookRepository.save(livro);
     }
     if (!usuario || !livro) {
