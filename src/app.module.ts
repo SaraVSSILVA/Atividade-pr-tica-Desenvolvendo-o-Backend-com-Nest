@@ -17,6 +17,7 @@ import { AuthModule } from './auth/auth.module';
 import { LoanModule } from './loan/Loan.Module';
 import { WishlistModule } from './whishlist/Wishlist.Module';
 import { LoanEntity } from './loan/LoanEntity';
+import { WishlistEntity } from './whishlist/entities/WishlistEntity';
 
 @Module({
   imports: [
@@ -32,7 +33,13 @@ import { LoanEntity } from './loan/LoanEntity';
           username: configService.get<string>('DB_USER'),
           password: configService.get<string>('DB_PASSWORD'),
           database: configService.get<string>('DB_NAME'),
-          entities: [BookEntity, GenreEntity, UserEntity, LoanEntity],
+          entities: [
+            BookEntity,
+            GenreEntity,
+            UserEntity,
+            LoanEntity,
+            WishlistEntity,
+          ],
           synchronize: true,
         }) as TypeOrmModuleOptions,
     }),
