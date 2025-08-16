@@ -20,7 +20,6 @@ export class BookService {
     try {
       const response = await axios.get(url);
       const items = response.data.items || [];
-      // Adapta para o formato esperado pelo frontend
       return items.map((item: any) => ({
         id: item.id,
         titulo: item.volumeInfo?.title || '',
@@ -30,6 +29,7 @@ export class BookService {
         capaUrl: item.volumeInfo?.imageLinks?.thumbnail || '',
       }));
     } catch (error) {
+      console.error('Erro ao buscar livros:', error.message);
       return [];
     }
   }
@@ -42,7 +42,6 @@ export class BookService {
   ) {}
 
   async findAll(): Promise<BookEntity[]> {
-    // Retorna todos os livros, incluindo os dados do gênero associado
     return this.bookRepository.find({ relations: ['genre'] });
   }
 
@@ -60,11 +59,11 @@ export class BookService {
   }
 
   async create(createBookDto: CreateBookDto): Promise<BookEntity> {
-    // Busca a URL da capa
     const coverUrl = await this.fetchBookCoverUrl(
       createBookDto.name,
       createBookDto.author,
     );
+
     const genre = await this.genreRepository.findOne({
       where: { id: createBookDto.genreId },
     });
@@ -74,7 +73,6 @@ export class BookService {
       );
     }
 
-    // Cria uma nova instância do livro e salva no banco
     const newBook = this.bookRepository.create({
       ...createBookDto,
       coverUrl: coverUrl ?? undefined,
@@ -93,7 +91,6 @@ export class BookService {
       throw new NotFoundException(`Livro com ID ${id} não encontrado`);
     }
 
-    // Se o genreId for passado, busca o gênero e o associa
     if (updateBookDto.genreId) {
       const genre = await this.genreRepository.findOne({
         where: { id: updateBookDto.genreId },
@@ -124,12 +121,15 @@ export class BookService {
     try {
       const response = await this.httpService.get(url).toPromise();
       const items = response?.data?.items;
+
       if (Array.isArray(items) && items.length > 0) {
         const imageLinks = items[0]?.volumeInfo?.imageLinks;
         return imageLinks?.thumbnail || null;
       }
+
       return null;
     } catch (error) {
+      console.error('Erro na chamada da API do Google Books:', error.message);
       return null;
     }
   }

@@ -16,7 +16,7 @@ export class WishlistService {
     private readonly userRepository: Repository<UserEntity>,
     @InjectRepository(BookEntity)
     private readonly bookRepository: Repository<BookEntity>,
-  ) { }
+  ) {}
 
   async adicionar(dto: CreateWishlistDto): Promise<WishlistEntity> {
     const usuario = await this.userRepository.findOne({
