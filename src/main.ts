@@ -7,10 +7,9 @@ async function bootstrap() {
 
   // --- Configuração do Swagger ---
   const config = new DocumentBuilder()
-    .setTitle('Catálogo de Livros API') //
-    .setDescription('API para gerenciar um catálogo de livros') // Descrição da API
-    .setVersion('1.0') // Versão da API
-    // Adiciona a autenticação Bearer para o Swagger
+    .setTitle('Catálogo de Livros API')
+    .setDescription('API para gerenciar um catálogo de livros')
+    .setVersion('1.0')
     .addBearerAuth(
       { type: 'http', scheme: 'bearer', bearerFormat: 'JWT', in: 'header' },
       'access-token',
@@ -18,10 +17,8 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document); // 'api' é a rota onde a documentação estará
+  SwaggerModule.setup('api', app, document);
 
-  // --- Habilitar CORS ---
-  // Se você for usar um frontend, é crucial habilitar o CORS.
   app.enableCors();
 
   await app.listen(3000);
