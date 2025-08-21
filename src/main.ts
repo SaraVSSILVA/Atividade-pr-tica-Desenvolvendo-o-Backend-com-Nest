@@ -6,7 +6,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
 
-  // --- Configuração do Swagger ---
   const config = new DocumentBuilder()
     .setTitle('Catálogo de Livros API')
     .setDescription('API para gerenciar um catálogo de livros')
