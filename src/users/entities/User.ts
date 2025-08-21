@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   Column,
   Entity,
@@ -7,13 +10,12 @@ import {
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
-// Enum para definir os papéis de usuário
 export enum UserRole {
   ADMIN = 'ADMIN',
   USER = 'USER',
 }
 
-@Entity({ name: 'users' }) // Nome da tabela no banco de dados
+@Entity({ name: 'users' })
 export class UserEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -24,15 +26,13 @@ export class UserEntity {
   @Column()
   password: string;
 
-  // Nova coluna para armazenar o papel do usuário
   @Column({
     type: 'enum',
     enum: UserRole,
-    default: UserRole.USER, // O papel padrão é USER
+    default: UserRole.USER,
   })
   role: UserRole;
 
-  // Lógica para criptografar a senha antes de salvar
   @BeforeInsert()
   @BeforeUpdate()
   async hashPassword() {

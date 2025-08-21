@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
@@ -21,7 +22,8 @@ describe('BooksController (e2e)', () => {
       .post('/auth/login')
       .send({ username: 'leitor_exemplo', password: 'senha@123' });
     console.log('LOGIN RESPONSE BODY:', loginResponse.body);
-    jwtToken = loginResponse.body?.access_token || '';
+    const body = loginResponse.body as { access_token?: string };
+    jwtToken = body.access_token || '';
   });
 
   afterAll(async () => {
@@ -48,14 +50,18 @@ describe('BooksController (e2e)', () => {
       .post('/livro')
       .set('Authorization', `Bearer ${jwtToken}`)
       .send(book);
+    const responseBody = response.body as {
+      id: number;
+      coverUrl: string | null;
+    };
     expect(response.status).toBe(201);
-    expect(response.body).toHaveProperty('id');
-    expect(response.body).toHaveProperty('coverUrl');
+    expect(responseBody).toHaveProperty('id');
+    expect(responseBody).toHaveProperty('coverUrl');
     expect(
-      typeof response.body.coverUrl === 'string' ||
-      response.body.coverUrl === null,
+      typeof responseBody.coverUrl === 'string' ||
+        responseBody.coverUrl === null,
     ).toBe(true);
-    createdBookId = response.body.id;
+    createdBookId = responseBody.id;
   });
 
   it('GET /books/:id deve retornar o livro criado', async () => {

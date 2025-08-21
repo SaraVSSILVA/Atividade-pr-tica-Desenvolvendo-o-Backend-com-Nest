@@ -1,8 +1,26 @@
+interface GoogleBooksApiResponse {
+  items?: GoogleBooksApiItem[];
+}
+
+interface GoogleBooksApiItem {
+  id?: string;
+  volumeInfo?: {
+    title?: string;
+    authors?: string[];
+    imageLinks?: {
+      thumbnail?: string;
+    };
+  };
+}
 import axios from 'axios';
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+
+export interface GoogleBook {
+  id: string;
+  titulo: string;
+  autor: string;
+  capaUrl: string;
+}
+
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -14,25 +32,6 @@ import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class BookService {
-  async searchGoogleBooks(query: string): Promise<any[]> {
-    const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
-    const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&key=${apiKey}`;
-    try {
-      const response = await axios.get(url);
-      const items = response.data.items || [];
-      return items.map((item: any) => ({
-        id: item.id,
-        titulo: item.volumeInfo?.title || '',
-        autor: Array.isArray(item.volumeInfo?.authors)
-          ? item.volumeInfo.authors.join(', ')
-          : '',
-        capaUrl: item.volumeInfo?.imageLinks?.thumbnail || '',
-      }));
-    } catch (error) {
-      console.error('Erro ao buscar livros:', error.message);
-      return [];
-    }
-  }
   constructor(
     @InjectRepository(BookEntity)
     private readonly bookRepository: Repository<BookEntity>,
@@ -40,6 +39,49 @@ export class BookService {
     private readonly genreRepository: Repository<GenreEntity>,
     private httpService: HttpService,
   ) {}
+
+  async findByOwner(usuarioId: number): Promise<BookEntity[]> {
+    return this.bookRepository.find({
+      where: { owner: { id: usuarioId } },
+      relations: ['genre', 'owner'],
+    });
+  }
+
+  async searchGoogleBooks(query: string): Promise<GoogleBook[]> {
+    const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
+    const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&key=${apiKey}`;
+    try {
+      const response = await axios.get<GoogleBooksApiResponse>(url);
+      const items = Array.isArray(response.data.items)
+        ? response.data.items
+        : [];
+      return items.map((item) => {
+        const bookId = item.id ?? '';
+        const volumeInfo = item.volumeInfo ?? {};
+        const title = volumeInfo.title ?? '';
+        const authors = Array.isArray(volumeInfo.authors)
+          ? volumeInfo.authors.join(', ')
+          : '';
+        const capaUrl = volumeInfo.imageLinks?.thumbnail ?? '';
+        return {
+          id: bookId,
+          titulo: title,
+          autor: authors,
+          capaUrl: capaUrl,
+        };
+      });
+    } catch (error) {
+      const message =
+        typeof error === 'object' &&
+        error !== null &&
+        'message' in error &&
+        typeof (error as { message?: unknown }).message === 'string'
+          ? (error as { message: string }).message
+          : String(error);
+      console.error('Erro ao buscar livros:', message);
+      return [];
+    }
+  }
 
   async findAll(): Promise<BookEntity[]> {
     return this.bookRepository.find({ relations: ['genre'] });
@@ -50,11 +92,9 @@ export class BookService {
       where: { id },
       relations: ['genre'],
     });
-
     if (!book) {
       throw new NotFoundException(`Livro com ID ${id} não encontrado`);
     }
-
     return book;
   }
 
@@ -63,7 +103,6 @@ export class BookService {
       createBookDto.name,
       createBookDto.author,
     );
-
     const genre = await this.genreRepository.findOne({
       where: { id: createBookDto.genreId },
     });
@@ -72,7 +111,6 @@ export class BookService {
         `Gênero com ID ${createBookDto.genreId} não encontrado.`,
       );
     }
-
     const newBook = this.bookRepository.create({
       ...createBookDto,
       coverUrl: coverUrl ?? undefined,
@@ -86,11 +124,9 @@ export class BookService {
       id: id,
       ...updateBookDto,
     });
-
     if (!existingBook) {
       throw new NotFoundException(`Livro com ID ${id} não encontrado`);
     }
-
     if (updateBookDto.genreId) {
       const genre = await this.genreRepository.findOne({
         where: { id: updateBookDto.genreId },
@@ -102,7 +138,6 @@ export class BookService {
       }
       existingBook.genre = genre;
     }
-
     return this.bookRepository.save(existingBook);
   }
 
@@ -119,17 +154,27 @@ export class BookService {
     const apiKey = process.env.GOOGLE_BOOKS_API_KEY;
     const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&key=${apiKey}`;
     try {
-      const response = await this.httpService.get(url).toPromise();
-      const items = response?.data?.items;
-
-      if (Array.isArray(items) && items.length > 0) {
-        const imageLinks = items[0]?.volumeInfo?.imageLinks;
-        return imageLinks?.thumbnail || null;
+      const response = await this.httpService
+        .get<GoogleBooksApiResponse>(url)
+        .toPromise();
+      const items = Array.isArray(response?.data?.items)
+        ? response.data.items
+        : [];
+      if (items.length > 0) {
+        const volumeInfo = items[0].volumeInfo ?? {};
+        const thumbnail = volumeInfo.imageLinks?.thumbnail ?? null;
+        return thumbnail;
       }
-
       return null;
     } catch (error) {
-      console.error('Erro na chamada da API do Google Books:', error.message);
+      const message =
+        typeof error === 'object' &&
+        error !== null &&
+        'message' in error &&
+        typeof (error as { message?: unknown }).message === 'string'
+          ? (error as { message: string }).message
+          : String(error);
+      console.error('Erro na chamada da API do Google Books:', message);
       return null;
     }
   }

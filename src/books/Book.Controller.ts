@@ -1,4 +1,4 @@
-import { Query } from '@nestjs/common';
+import { ParseIntPipe, Query } from '@nestjs/common';
 import {
   Controller,
   Get,
@@ -28,10 +28,25 @@ import {
 @UseGuards(AuthGuard('jwt')) // ✅ Protege todas as rotas
 @Controller('livro')
 export class BookController {
+  @Get('proprietario/:usuarioId')
+  @ApiOperation({ summary: 'Lista livros por proprietário' })
+  async findByOwner(
+    @Param('usuarioId', ParseIntPipe) usuarioId: number,
+  ): Promise<BookEntity[]> {
+    return this.bookService.findByOwner(usuarioId);
+  }
   @Get('search/google')
   @ApiOperation({ summary: 'Busca livros na Google Books API' })
   async searchGoogle(@Query('q') q: string): Promise<any[]> {
-    return this.bookService.searchGoogleBooks(q);
+    try {
+      const result = await this.bookService.searchGoogleBooks(q);
+      if (!Array.isArray(result)) {
+        throw new Error('Unexpected response format from Google Books API');
+      }
+      return result;
+    } catch {
+      throw new NotFoundException('Erro ao buscar livros na Google Books API');
+    }
   }
   constructor(private readonly bookService: BookService) {}
 

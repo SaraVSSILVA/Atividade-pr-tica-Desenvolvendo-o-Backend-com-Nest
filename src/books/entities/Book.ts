@@ -6,6 +6,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { GenreEntity } from '../../genres/entities/Genre';
+import { UserEntity } from '../../users/entities/User';
 
 // Enum para o status do livro
 export enum BookStatus {
@@ -24,6 +25,11 @@ export enum BookPriority {
 
 @Entity({ name: 'book' }) // Nome da tabela no banco de dados
 export class BookEntity {
+  @ManyToOne(() => UserEntity, {
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'owner_id' })
+  owner: UserEntity;
   @PrimaryGeneratedColumn()
   id: number;
 
