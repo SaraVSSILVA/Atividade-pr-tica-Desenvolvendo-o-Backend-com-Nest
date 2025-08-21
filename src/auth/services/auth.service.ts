@@ -12,7 +12,7 @@ export class AuthService {
     private userService: UserService,
     private jwtService: JwtService,
     private bcrypt: Bcrypt,
-  ) {}
+  ) { }
 
   async validateUser(username: string, password: string): Promise<any> {
     const searchUser = await this.userService.findByUser(username);
@@ -44,7 +44,7 @@ export class AuthService {
     }
 
     // O payload do token JWT deve incluir informações úteis.
-    const payload = { sub: user.id, username: user.username };
+    const payload = { sub: user.id, username: user.username, role: user.role };
 
     return {
       access_token: this.jwtService.sign(payload),
